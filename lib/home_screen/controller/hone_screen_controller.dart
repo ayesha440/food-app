@@ -61,7 +61,6 @@ class NewCategories extends StatelessWidget {
               )
           ),
         ),
-
         Padding(
           padding:  EdgeInsets.only(top: size.width*0.01,right:size.width*0.2 ),
           child: Row(

@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:food_app/onboarding_screen/view/onboardingscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_app/profile_screen/user_provider.dart';
+import 'package:food_app/resturant_screen/providers/foodprovider.dart';
 import 'package:provider/provider.dart';
 import 'bottombar/view/bottom_bar.dart';
+import 'cart_screen/provider/cart_provider.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -13,6 +15,9 @@ void main() async{
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserProvider(),),
+    ChangeNotifierProvider(create: (context) => CartProvider()),
+    ChangeNotifierProvider(create: (context) => Foodprovider()),
+
 
   ],child: const MyApp()));
 }
@@ -24,7 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: FirebaseAuth.instance.currentUser!=null ? BottomBar(): OnboardingScreen(),
+      home:  BottomBar(),
+      // home: FirebaseAuth.instance.currentUser!=null ? BottomBar(): OnboardingScreen(),
     );
   }
 }

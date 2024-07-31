@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onTap: ()async{
                         Provider.of<UserProvider>(context,listen: false).pickImage(ImageSource.gallery);
                         String url= await Provider.of<UserProvider>(context,listen: false)
-                            .upload(userPro.pickedFile!,'jpg');
+                            .upload(userPro.pickedFile ?? File(""),'jpg');
                         await FirebaseFirestore.instance.collection('users').doc(userPro.user!.uid).set({
                           'imageUrl':url
                         });
@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                       child:CircleAvatar(
                         radius: 65,
-                        backgroundImage: userPro.user!.imageUrl.isNotEmpty? NetworkImage(userPro.user!.imageUrl) :
+                        backgroundImage: userPro.user?.imageUrl.isNotEmpty ?? false ? NetworkImage(userPro.user?.imageUrl ?? "") :
                         NetworkImage(
                             "https://i.pinimg.com/474x/b8/29/22/b82922d1490bc3f10c3ed99683ea68c2.jpg"
                         ),
@@ -53,12 +53,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   SizedBox(height: 30,),
 
-                  Text(userPro.user!.firstName,style: TextStyle(
+                  Text(userPro.user?.firstName ?? "",style: TextStyle(
                       color: Colors.black
                   ),),
                   SizedBox(height: 30,),
 
-                  Text(userPro.user!.phone.toString()),
+                  Text(userPro.user?.phone.toString() ?? ""),
                   SizedBox(height: 30,),
                   Padding(
                     padding: const EdgeInsets.only(left: 20,right: 20),

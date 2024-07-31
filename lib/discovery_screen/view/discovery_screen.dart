@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,15 +18,14 @@ class DiscoveryScreen extends StatefulWidget {
 }
 
 class _DiscoveryScreenState extends State<DiscoveryScreen> {
-
+  CustomInfoWindowController _customInfoWindowController=CustomInfoWindowController();
   Completer<GoogleMapController> _controller=Completer();
   Uint8List? markerImage;
   static final CameraPosition _kGooglePlex=const CameraPosition(
-      target: LatLng(30.1742, 71.3913),
-  zoom: 14,
+      target: LatLng(30.2426, 71.4850 ),
+  zoom: 12,
   );
-  final List<Marker> _markers=<Marker>[Marker(markerId: MarkerId("2"),
-  position:LatLng(30.2426, 71.4850 ), )];
+  final List<Marker> _markers=<Marker>[];
   List<String> images=[
     "assets/images/mlogo.png",
     "assets/images/hardees.jpeg",
@@ -55,12 +55,18 @@ Future<Uint8List> getBytesFromAssets(String path,int width)async{
   }
 
    loadData()async{
-  for(int i=0 ; i<images.length; i++){
+  for(int i=0 ; i<_latlng.length; i++){
     final Uint8List markerIcon=await getBytesFromAssets(images[i], 100);
     _markers.add(
       Marker(markerId: MarkerId(i.toString()),
       position: _latlng[i],
         icon: BitmapDescriptor.fromBytes(markerIcon),
+        onTap: (){
+        _customInfoWindowController.addInfoWindow!(
+          Text(""),
+        _latlng[i]
+        );
+        },
         infoWindow: InfoWindow(
           title: title[i],
         )
@@ -87,13 +93,20 @@ Future<Uint8List> getBytesFromAssets(String path,int width)async{
             myLocationEnabled: true,
             compassEnabled: true,
             myLocationButtonEnabled: true,
-
+                 onTap: (postition){
+                _customInfoWindowController.hideInfoWindow!();
+                 },
+            onCameraMove: (position){
+                _customInfoWindowController.onCameraMove!();
+            },
             markers: Set<Marker>.of(_markers),
             onMapCreated: (GoogleMapController controller){
                 _controller.complete(controller);
+                _customInfoWindowController.googleMapController=controller;
 
             },
           ),
+          CustomInfoWindow(controller: _customInfoWindowController,height: 50,width: 50,offset: 30,),
           SizedBox(
             height: mheight*0.15,
             width: double.infinity,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_app/resturant_screen/models/restaurent/restaurent_model.dart';
 
 class Kfc extends StatelessWidget {
-  const Kfc ({super.key});
+  final RestaurentModel restaurent;
+  const Kfc ({super.key, required this.restaurent});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class Kfc extends StatelessWidget {
             width: size.width*1,
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/images/kfc.png"),
+                    image: AssetImage(restaurent.restaurentImage),
                     fit: BoxFit.cover
                 )
             ),
@@ -51,19 +53,19 @@ class Kfc extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: size.width*0.08,
-                  backgroundImage: AssetImage("assets/images/kfclogo.png"),
+                  backgroundImage: AssetImage(restaurent.logoImage),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("KFC ",style: TextStyle(
+                    Text(restaurent.name,style: TextStyle(
                         color: Colors.black,fontSize: size.width*0.06,fontWeight: FontWeight.bold
                     ),),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         SvgPicture.asset("assets/images/location.svg",color: Colors.black,),
-                        Text(" Bramlea & Sandalwood",style: TextStyle(color: Colors.black.withOpacity(0.7),fontSize: size.width*0.03),)
+                        Text(restaurent.location,style: TextStyle(color: Colors.black.withOpacity(0.7),fontSize: size.width*0.03),)
                       ],
                     ),
                   ],
@@ -72,7 +74,9 @@ class Kfc extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor:  Color(0xFFB3BFCB).withOpacity(0.5),
                   radius: size.width*0.07,
-                  child: Icon(Icons.favorite,color: Colors.grey,),
+                  child: IconButton(onPressed: () {
+
+                  }, icon: Icon(Icons.favorite))
                 ),
               ],
             ),
@@ -107,7 +111,7 @@ class Kfc extends StatelessWidget {
                             ),
                           ),
                           Text(" Ratings:"),
-                          Text("4.5"),
+                          Text(restaurent.ratings.toString()),
                         ],
                       ),
                       Row(
@@ -117,13 +121,13 @@ class Kfc extends StatelessWidget {
                             width: size.width*0.06,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: AssetImage("assets/images/box-time.png"),
+                                    image: AssetImage("assets/images/box.png"),
                                     fit: BoxFit.cover
                                 )
                             ),
                           ),
                           Text(" Delivers in "),
-                          Text("15-20 min "),
+                          Text(restaurent.deliveryTime),
                         ],
                       ),
                       Row(
@@ -133,12 +137,12 @@ class Kfc extends StatelessWidget {
                             width: size.width*0.05,
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: AssetImage("assets/images/element-2.png"),
+                                    image: AssetImage("assets/images/redbox.png"),
                                     fit: BoxFit.cover
                                 )
                             ),
                           ),
-                          Text(" Burgers"),
+                          Text(restaurent.category),
                         ],
                       ),
 

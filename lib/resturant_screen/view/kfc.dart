@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_app/resturant_screen/widgets/custom_widget.dart';
 
 class Kfc extends StatelessWidget {
   const Kfc ({super.key});
@@ -44,39 +45,8 @@ class Kfc extends StatelessWidget {
             ),
           ),
 
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: size.width*0.03,horizontal:size.width*0.05 ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                CircleAvatar(
-                  radius: size.width*0.08,
-                  backgroundImage: AssetImage("assets/images/kfclogo.png"),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("KFC ",style: TextStyle(
-                        color: Colors.black,fontSize: size.width*0.06,fontWeight: FontWeight.bold
-                    ),),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SvgPicture.asset("assets/images/location.svg",color: Colors.black,),
-                        Text(" Bramlea & Sandalwood",style: TextStyle(color: Colors.black.withOpacity(0.7),fontSize: size.width*0.03),)
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(width: size.width*0.05,),
-                CircleAvatar(
-                  backgroundColor:  Color(0xFFB3BFCB).withOpacity(0.5),
-                  radius: size.width*0.07,
-                  child: Icon(Icons.favorite,color: Colors.grey,),
-                ),
-              ],
-            ),
-          ),
+         CustomResturantLogoWidget(locationNmae: "Bramlea & Sandalwood",
+             logoImage: "assets/images/kfclogo.png", resturantNmae: "KFC"),
 
           Container(
             height: size.height*0.17,

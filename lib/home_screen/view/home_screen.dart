@@ -1,9 +1,13 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_app/discovery_screen/view/current_location.dart';
+import 'package:food_app/home_screen/controller/address.dart';
 import 'package:food_app/utensills_screens/all_utensills.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-
 import '../../resturant_screen/view/harvey.dart';
 import '../../resturant_screen/view/kfc.dart';
 import '../../resturant_screen/view/mac.dart';
@@ -11,11 +15,8 @@ import '../controller/hone_screen_controller.dart';
 import 'all_category.dart';
 import 'category_page.dart';
 
-
-
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+  HomePage({super.key,});
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -37,6 +38,82 @@ class _HomePageState extends State<HomePage> {
     "Utenlis",
     "See All",
   ];
+  String address = '';
+
+  Future<void> _saveLocationToFirebase(String address) async {
+    await FirebaseFirestore.instance.collection('locations').add({
+      'address': address,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+  Future<void> _getCurrentUserLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      log("Location Denied");
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+        return Future.error('Location permissions are denied.');
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    if (placemarks.isNotEmpty) {
+      Placemark place = placemarks[0];
+      String street = place.street ?? '';
+      String locality = place.locality ?? '';
+      String subLocality = place.subLocality ?? '';
+      String administrativeArea = place.administrativeArea ?? '';
+      String postalCode = place.postalCode ?? '';
+      String country = place.country ?? '';
+
+      String address1 = '';
+      if (street.isNotEmpty) {
+        address1 += street;
+      }
+      if (locality.isNotEmpty) {
+        address1 += ', $locality';
+      }
+      if (subLocality.isNotEmpty) {
+        address1 += ', $subLocality';
+      }
+      if (administrativeArea.isNotEmpty) {
+        address1 += ', $administrativeArea';
+      }
+      if (postalCode.isNotEmpty) {
+        address1 += ', $postalCode';
+      }
+      if (country.isNotEmpty) {
+        address1 += ', $country';
+      }
+
+      setState(() {
+        address = address1;
+      });
+    } else {
+      setState(() {
+        address = 'No address available for this location.';
+      });
+    }
+    await _saveLocationToFirebase(address);
+  }
+
+  Future<void> _updateCurrentLocation() async {
+    await _getCurrentUserLocation();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentUserLocation();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,21 +162,42 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    height: size.height*0.05,
-                    width: size.width*0.45,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFCE2CF).withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Image.asset("assets/images/location.png"),
-                        Text("32, Kingston Ln.",style: TextStyle(color: Color(0xFFEA985B).withOpacity(0.7)),)
-                      ],
+              Container(
+              height: size.height * 0.05,
+                width: size.width * 0.45,
+                decoration: BoxDecoration(
+                  color: Color(0xFFFCE2CF).withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10,right: 5),
+                  child: InkWell(
+                    onTap: () {
+                      _updateCurrentLocation();
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserCurrentLocation()));
+                    },
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Image.asset("assets/images/location.png"),
+                          SizedBox(width: size.width*0.02,),
+                          if (address.isNotEmpty)
+                            Text(
+                              ' $address',
+                              style: TextStyle(color: Color(0xFFEA985B).withOpacity(0.7)),
+                            ),
+                          // Text(
+                          //   $address ,
+                          //   style: TextStyle(color: Color(0xFFEA985B).withOpacity(0.7)),
+                          // ),
+                        ],
+                      ),
                     ),
                   ),
+                ),
+              ),
                   SizedBox(width: size.width*0.05,),
 
                   Container(

@@ -81,7 +81,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             backgroundColor:
                             const MaterialStatePropertyAll(Color(0xffffE47070)),
                             minimumSize:
-                            const MaterialStatePropertyAll(Size(232, 58))),
+                            const MaterialStatePropertyAll(Size(232, 58))
+                        ),
                         onPressed: () async {
                           FirebaseAuth auth=FirebaseAuth.instance;
                          await auth.signOut();

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/favourite_screen/provider/fav_provider.dart';
 import 'package:food_app/onboarding_screen/view/onboardingscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_app/profile_screen/user_provider.dart';
@@ -13,6 +14,8 @@ void main() async{
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => UserProvider(),),
+    ChangeNotifierProvider(create: (context) => FavoriteProvider(),),
+
 
   ],child: const MyApp()));
 }

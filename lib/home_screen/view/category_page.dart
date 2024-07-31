@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../resturant_screen/view/mac.dart';
-import '../../resturant_screen/view/resturant_menu_screen.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

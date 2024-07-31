@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/favourite_screen/view/fav_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 class BottomSheetScreen extends StatelessWidget {
   @override
@@ -27,11 +28,16 @@ class BottomSheetScreen extends StatelessWidget {
             children: [
               Image.asset("assets/images/heart.png"),
               SizedBox(width: 10,),
-              Text("Add to Favourites",style: GoogleFonts.inter(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 17
-              ),)
+              InkWell(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FavoriteScreen()));
+                },
+                child: Text("Add to Favourites",style: GoogleFonts.inter(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 17
+                ),),
+              )
             ],
           ),
           SizedBox(height: 10),
